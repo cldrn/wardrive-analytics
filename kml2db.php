@@ -1,4 +1,11 @@
 <?php
+/*
+* Imports .kml files into a mysql database.
+*
+* Note: This script queries hwaddress.com to get the vendor of the wireless networks if the vendor does not exists in the table "vendors".
+* Depends on curl.
+* @see wifiz.sql
+*/
 	define("DB_USER","root");
 	define("DB_DBNAME","wifiz");
 	define("DB_PWD","toor");
@@ -7,7 +14,7 @@
 	define("VENDORS_LOOKUP_URI","http://hwaddress.com/?q=");
 	define("HTTP_USERAGENT", "Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; en-US; rv:1.7a) Gecko/20040614 Firefox/0.9.0+");
 
-	/*
+	/**
 	* Inits database
 	*/
 	function init_db() {
@@ -15,7 +22,7 @@
 		if(!$con) {	die(mysql_error()); }
 		mysql_select_db(DB_DBNAME);
 	}
-	/*
+	/**
 	* Writes string to logfile and stdout
 	*/
 	function debug_log($string) 
@@ -28,14 +35,14 @@
 		fclose($fp);
 	}
 	
-	/*
+	/**
 	* Writes string to logfile and stdout
 	*/
 	function debug_ap($ap) 
 	{
 		if (DEBUG_LEVEL>0)
 		{
-			echo "New wireless network:\n";
+			echo "[Network]\n";
 			echo "Vendor name:".$ap["vendor"]."\n";
 			echo "SSID:".$ap["ssid"]."\n";
                         echo "Coordinates:".$ap["coords"]."\n";
@@ -184,7 +191,6 @@
 	
 	/**
 	* Inserts network in database
-	* @param string $vendor_string Vendor name [String]
 	* @return boolean Insert status
 	*/
 	function insert_network($coords, $ssid, $encryption, $vendor_id, $mac_addr, $frequency) 
@@ -203,9 +209,9 @@
 	}
 	
 	/**
-	* Inserts network in database
-	* @param string $vendor_string Vendor name [String]
-	* @return boolean Insert status
+	* Checks if the wireless network is already on the db
+	* @param 
+	* @return
 	*/
 	function is_network_registered($coords, $mac_addr) 
 	{
@@ -222,9 +228,9 @@
 	}
 	
 	/**
-	* Inserts network in database
-	* @param string $vendor_string Vendor name [String]
-	* @return boolean Insert status
+	* Checks if vendor is in db by mac id
+	* @param 
+	* @return 
 	*/
 	function is_vendor_registered($mac_id) 
 	{
@@ -238,7 +244,7 @@
 		
 		return false;
 	}
-	/*
+	/**
 	* Parses object and returns associative array with the information needed to register the AP
 	*/
 	function parse_ap($obj)
@@ -257,7 +263,7 @@
 		return $ap;
 	}
 	
-	/*
+	/**
 	* Main function in charge of parsing KML files from the android app "wardrive"
 	*/
 	function parse_kml($file)
@@ -273,12 +279,13 @@
 					if(!is_network_registered($ap["coords"], $ap["mac_addr"])) 
 					{
 						insert_network($ap["coords"], $ap["ssid"], $ap["encryption"], $ap["vendor_id"], $ap["mac_addr"], $ap["frequency"]);
-						debug_log("Inserted new network with SSID:".$ap["ssid"]);
+						debug_log("Added new network with SSID:".$ap["ssid"]);
 					}
 				}
 			}
 		}
 	}
+
 init_db();
 $source = $argv[1];
 parse_kml($source);
