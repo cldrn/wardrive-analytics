@@ -21,7 +21,7 @@
 	function debug_log($string) 
 	{
 		if (DEBUG_LEVEL>0)
-			echo "$string\n";
+			echo "\n[DEBUG] $string\n";
 		
 		$fp=fopen(DEBUG_LOG,"a");
 		fwrite($fp,"{$string}\n");
@@ -249,8 +249,6 @@
 		$ap["mac_addr"]=$mac_addr;
 		$ap["vendor"]=$vendor;
 		$ap["vendor_id"]=get_vendor_id_by_name($vendor);
-	
-                debug_log("COORDS!:".$obj->Point->coordinates);
 		$ap["coords"]=$obj->Point->coordinates;
 		$ap["ssid"]=$obj->name;
 		$ap["frequency"]=return_substr($obj->description,'Frequency: <b>','</b><br/>Level:');
@@ -275,7 +273,7 @@
 					if(!is_network_registered($ap["coords"], $ap["mac_addr"])) 
 					{
 						insert_network($ap["coords"], $ap["ssid"], $ap["encryption"], $ap["vendor_id"], $ap["mac_addr"], $ap["frequency"]);
-						debug_log("Inserted new network succesfully!:".$ap["ssid"]);
+						debug_log("Inserted new network with SSID:".$ap["ssid"]);
 					}
 				}
 			}
