@@ -40,6 +40,10 @@
     <script type="text/javascript" src="markerclusterer.v3.js"></script>
     <script type="text/javascript">
       function initialize() {
+        var green_icon = "radio-station-green.png";
+        var blue_icon = "radio-station-blue.png";
+        var yellow_icon = "radio-station-yellow.png";
+
         var center = new google.maps.LatLng(37.4419, -122.1419);
 
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -55,8 +59,16 @@
           var longitude = coords[1];
           var latitude = coords[0];
           var latLng = new google.maps.LatLng(longitude,latitude);
+          var marker_icon;
+          if (dataNetwork.encryption=="none") {
+            marker_icon = blue_icon;
+          } else if (dataNetwork.encryption="[WEP]") {
+            marker_icon = green_icon;
+          } else {
+            marker_icon = yellow_icon;
+          }
           var marker = new google.maps.Marker({
-            position: latLng
+            position: latLng, title: dataNetwork.ssid, icon: marker_icon
           });
           markers.push(marker);
         }
