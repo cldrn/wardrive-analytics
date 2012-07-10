@@ -7,7 +7,7 @@
 	define("DB_USER","root");
 	define("DB_DBNAME","wifiz");
 	define("DB_PWD","toor");
-	define("DEBUG_LEVEL", 1);
+	define("DEBUG_LEVEL", 0);
 	define("DEBUG_LOG", "debug.log");
 
         /**
@@ -53,7 +53,6 @@
 	*/
 	function get_network_count()
 	{
-                $networks=array();
 		$sql = "SELECT count(*) as network_count FROM networks";
 		$results = mysql_query($sql) or die(mysql_error());
 		$data = mysql_fetch_assoc($results);
@@ -61,15 +60,6 @@
 		return $data["network_count"];
 	}
 
-	/**
-	* Generate json data for networks in database
-	* @return string
-	*/
-	function generate_json()
-	{
-
-        }
-	
 	/**
 	* Reads networks from database and returns an array of structures containing the AP info
 	* @return mixed
@@ -81,16 +71,17 @@
 		$results = mysql_query($sql) or die(mysql_error());
 	        $i=0;
 		if(mysql_num_rows($results)>0) {
-			$data = mysql_fetch_assoc($results);
+			while( $data = mysql_fetch_assoc($results) ) {
 
-			$networks[$i]["vendor"]=$data["vendor_name"];
-                        $networks[$i]["ssid"]=$data["ssid"];
-                        $networks[$i]["coords"]=$data["coords"];
-                        $networks[$i]["encryption"]=$data["encryption"];
-                        $networks[$i]["mac_addr"]=$data["mac_addr"];
-                        $networks[$i]["frequency"]=$data["frequency"];
-                        debug_ap($networks[$i]);
-                        $i++;
+			  $networks[$i]["vendor"]=$data["vendor_name"];
+                          $networks[$i]["ssid"]=$data["ssid"];
+                          $networks[$i]["coords"]=$data["coords"];
+                          $networks[$i]["encryption"]=$data["encryption"];
+                          $networks[$i]["mac_addr"]=$data["mac_addr"];
+                          $networks[$i]["frequency"]=$data["frequency"];
+                          debug_ap($networks[$i]);
+                          $i++;
+                        }
 		}
 		return $networks;
 	}
@@ -101,6 +92,13 @@
 	*/
 	function generate_json()
 	{
+          $network_count = get_network_count();
+          $networks = get_networks();
 
+          $json_obj["counter"] = $network_count;
+          $json_obj["networks"] = $networks;
+          echo "var data = ".json_encode($json_obj);
         }
+init_db();
+generate_json();
 ?>
