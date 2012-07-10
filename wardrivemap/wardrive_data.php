@@ -55,12 +55,19 @@
 	function get_networks()
 	{
                 $networks=array();
-		$sql = "SELECT * FROM networks N JOIN vendors V ON N.vendor_id = V.id";
+		$sql = "SELECT V.name as vendor_name, V.known_vulnerabilities, N.coords, N.ssid, N.encryption, N.frequency, N.mac_addr FROM networks N JOIN vendors V ON N.vendor_id = V.id";
 		$results = mysql_query($sql) or die(mysql_error());
-	
+	        $i=0;
 		if(mysql_num_rows($results)>0) {
-			$ = mysql_fetch_assoc($results);
-			$ap
+			$data = mysql_fetch_assoc($results);
+
+			$networks[$i]["vendor"]=$data["vendor_name"];
+                        $networks[$i]["ssid"]=$data["ssid"];
+                        $networks[$i]["coords"]=$data["coords"];
+                        $networks[$i]["encryption"]=$data["encryption"];
+                        $networks[$i]["mac_addr"]=$data["mac_addr"];
+                        $networks[$i]["frequency"]=$data["frequency"];
+                        $i++;
 		}
 		return $networks;
 	}
