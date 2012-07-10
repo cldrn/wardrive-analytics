@@ -47,6 +47,28 @@
 			echo "Frequency:".$ap["frequency"]."\n\n";
 		}
 	}
+        /**
+	* Get a network count
+	* @return mixed
+	*/
+	function get_network_count()
+	{
+                $networks=array();
+		$sql = "SELECT count(*) as network_count FROM networks";
+		$results = mysql_query($sql) or die(mysql_error());
+		$data = mysql_fetch_assoc($results);
+               
+		return $data["network_count"];
+	}
+
+	/**
+	* Generate json data for networks in database
+	* @return string
+	*/
+	function generate_json()
+	{
+
+        }
 	
 	/**
 	* Reads networks from database and returns an array of structures containing the AP info
@@ -67,10 +89,18 @@
                         $networks[$i]["encryption"]=$data["encryption"];
                         $networks[$i]["mac_addr"]=$data["mac_addr"];
                         $networks[$i]["frequency"]=$data["frequency"];
+                        debug_ap($networks[$i]);
                         $i++;
 		}
 		return $networks;
 	}
-	
 
+	/**
+	* Generate json data for networks in database
+	* @return string
+	*/
+	function generate_json()
+	{
+
+        }
 ?>
