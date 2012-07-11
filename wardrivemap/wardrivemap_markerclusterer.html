@@ -20,11 +20,12 @@
         -webkit-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
         -moz-box-shadow: rgba(64, 64, 64, 0.5) 0 2px 5px;
         box-shadow: rgba(64, 64, 64, 0.1) 0 2px 5px;
-        width: 600px;
+        width: 100%;
       }
 
       #map {
-        width: 90%;
+        float: center;
+        width: 100%;
         height: 600px;
       }
 
@@ -64,9 +65,7 @@
           var infowindow = new google.maps.InfoWindow();
 
           var coords = dataNetwork.coords.split(",");
-          var longitude = coords[1];
-          var latitude = coords[0];
-          var latLng = new google.maps.LatLng(longitude,latitude);
+          var latLng = new google.maps.LatLng(coords[1],coords[0]);
           var marker_icon;
 
           var ap_info = "<h2>"+dataNetwork.ssid+"</h2>";
@@ -74,27 +73,40 @@
           ap_info += "<p>Frequency:"+dataNetwork.frequency+"</p>";
           ap_info += "<p>Vendor:"+dataNetwork.vendor+"</p>";
 
-
-          if (dataNetwork.encryption=="none") {
-            marker_icon = blue_icon;
-          } else if (dataNetwork.encryption=="[WEP]") {
-            marker_icon = green_icon;
-          } else {
-            marker_icon = yellow_icon;
+          switch(dataNetwork.encryption) {
+            case "none":
+              marker_icon = blue_icon;
+            break;
+            case "[WEP]":
+              marker_icon = green_icon;
+            break;
+            case "[WPS][WEP]":
+              marker_icon = green_icon;
+            break;
+            case "[WPA-PSK-TKIP]":
+              marker_icon = yellow_icon;
+            break;
+            case "[WPA2-PSK-CCMP]":
+              marker_icon = yellow_icon
+            break;
+            default:
+              marker_icon = yellow_icon
+            break;
           }
-          var marker = new google.maps.Marker({
-            position: latLng, title: dataNetwork.ssid, icon: marker_icon, prueba: ap_info
+
+         var marker = new google.maps.Marker({
+            position: latLng, title: dataNetwork.ssid, icon: marker_icon, apinfo: ap_info
           });
           google.maps.event.addListener(marker, 'click', (function(marker, i) {
             return function() { 
-              infowindow.setContent(marker.prueba);
+              infowindow.setContent(marker.apinfo);
               infowindow.open(map, marker);
           }
       })(marker, i));
           markers.push(marker);
         }
 
-        var mcOptions = {gridSize: 50, maxZoom: 15};
+        var mcOptions = {gridSize: 30, maxZoom: 15};
 
         var markerCluster = new MarkerClusterer(map, markers, mcOptions);
       }
