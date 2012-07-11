@@ -24,8 +24,8 @@
       }
 
       #map {
-        width: 600px;
-        height: 400px;
+        width: 90%;
+        height: 600px;
       }
 
     </style>
@@ -39,6 +39,12 @@
     <script type="text/javascript" src="wardrive_data.php"></script>
     <script type="text/javascript" src="markerclusterer.v3.js"></script>
     <script type="text/javascript">
+      function doCallback(item) {
+          return function () {
+            item.open(map, item.content);
+          };
+      }
+
       function initialize() {
         var green_icon = "radio-station-green.png";
         var blue_icon = "radio-station-blue.png";
@@ -53,25 +59,41 @@
         });
 
         var markers = [];
-        for (var i = 0; i < data.counter; i++) {
+        for (var i = 0; i < data.networks.length; i++) {
           var dataNetwork = data.networks[i];
+          var infowindow = new google.maps.InfoWindow();
+
           var coords = dataNetwork.coords.split(",");
           var longitude = coords[1];
           var latitude = coords[0];
           var latLng = new google.maps.LatLng(longitude,latitude);
           var marker_icon;
+
+          var ap_info = "<h2>"+dataNetwork.ssid+"</h2>";
+          ap_info += "<p>Encryption:"+dataNetwork.encryption+"</p>";
+          ap_info += "<p>Frequency:"+dataNetwork.frequency+"</p>";
+          ap_info += "<p>Vendor:"+dataNetwork.vendor+"</p>";
+
+
           if (dataNetwork.encryption=="none") {
             marker_icon = blue_icon;
-          } else if (dataNetwork.encryption="[WEP]") {
+          } else if (dataNetwork.encryption=="[WEP]") {
             marker_icon = green_icon;
           } else {
             marker_icon = yellow_icon;
           }
           var marker = new google.maps.Marker({
-            position: latLng, title: dataNetwork.ssid, icon: marker_icon
+            position: latLng, title: dataNetwork.ssid, icon: marker_icon, prueba: ap_info
           });
+          google.maps.event.addListener(marker, 'click', (function(marker, i) {
+            return function() { 
+              infowindow.setContent(marker.prueba);
+              infowindow.open(map, marker);
+          }
+      })(marker, i));
           markers.push(marker);
         }
+
         var mcOptions = {gridSize: 50, maxZoom: 15};
 
         var markerCluster = new MarkerClusterer(map, markers, mcOptions);
