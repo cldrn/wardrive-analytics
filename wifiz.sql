@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `networks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `coords` varchar(75) NOT NULL,
   `ssid` varchar(100) NOT NULL,
-  `encryption` varchar(25) NOT NULL,
+  `encryption` varchar(45) NOT NULL,
   `vendor_id` int(11) NOT NULL,
   `mac_addr` varchar(20) NOT NULL,
   `frequency` int(11) NOT NULL,

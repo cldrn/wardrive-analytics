@@ -30,26 +30,18 @@
       }
 
     </style>
-    <script type="text/javascript">
-    function roundNumber(num, dec) {
-      var result = Math.round(num*Math.pow(10,dec))/Math.pow(10,dec);
-      return result;
-    }
-    </script>
-    <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+   <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript" src="wardrive_data.php"></script>
     <script type="text/javascript" src="markerclusterer.v3.js"></script>
     <script type="text/javascript">
-      function doCallback(item) {
-          return function () {
-            item.open(map, item.content);
-          };
-      }
-
       function initialize() {
-        var green_icon = "radio-station-green.png";
-        var blue_icon = "radio-station-blue.png";
-        var yellow_icon = "radio-station-yellow.png";
+        var green_icon = "images/radio-station-green.png";
+        var blue_icon = "images/radio-station-blue.png";
+        var yellow_icon = "images/radio-station-yellow.png";
+        var purple_icon = "images/radio-station-purple.png";
+        var white_icon = "images/radio-station-white.png";
+        var cyan_icon = "images/radio-station-cyan.png";
+        var red_icon = "images/radio-station-red.png";
 
         var center = new google.maps.LatLng(37.4419, -122.1419);
 
@@ -72,12 +64,26 @@
           ap_info += "<p>Encryption:"+dataNetwork.encryption+"</p>";
           ap_info += "<p>Frequency:"+dataNetwork.frequency+"</p>";
           ap_info += "<p>Vendor:"+dataNetwork.vendor+"</p>";
+          ap_info += "<p>Mac Addr:"+dataNetwork.mac_addr+"</p>";
+
 
           switch(dataNetwork.encryption) {
             case "none":
               marker_icon = blue_icon;
             break;
+            case "[IBSS]":
+              marker_icon = cyan_icon;
+            break;
+            case "[WPS][ESS]":
+              marker_icon = purple_icon;
+            break;
             case "[WEP]":
+              marker_icon = green_icon;
+            break;
+            case "[WEP][ESS]":
+              marker_icon = green_icon;
+            break;
+            case "[WEP][IBSS]":
               marker_icon = green_icon;
             break;
             case "[WPS][WEP]":
@@ -86,11 +92,23 @@
             case "[WPA-PSK-TKIP]":
               marker_icon = yellow_icon;
             break;
+            case "[WPA-PSK-CCMP]":
+              marker_icon = yellow_icon;
+            break;
+            case "[WPA-EAP-TKIP]":
+              marker_icon = yellow_icon;
+            break;
             case "[WPA2-PSK-CCMP]":
-              marker_icon = yellow_icon
+              marker_icon = red_icon
+            break;
+            case "[WPA2-PSK-TKIP]":
+              marker_icon = red_icon
+            break;
+            case "[WPA2-EAP-CCMP]":
+              marker_icon = red_icon
             break;
             default:
-              marker_icon = yellow_icon
+              marker_icon = white_icon
             break;
           }
 
